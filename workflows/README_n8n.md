@@ -124,6 +124,12 @@ document instead of creating a duplicate.
 
 ### Exporting workflows from n8n
 
+Create a folder inside n8n node ***if it is the first time*** exporting
+for control version.
+For instance a folder called `workflows`:
+
+    docker exec n8n mkdir -p /home/node/workflows
+
 Workflows live inside the n8n container. To pull them out for version
 control:
 
