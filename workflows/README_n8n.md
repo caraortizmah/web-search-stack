@@ -58,35 +58,49 @@ The main workflow follows this general sequence:
    to the FlareSolverr container is used instead of a direct request.
 
 3. Object parser to json (case of POST request)
-   
+   The data is wrapped in HTML. FlareSolverr returns the raw page, 
+   and thw webpage (source 1) renders its JSON inside 
+   an HTML`<pre>` tag. JSON string is extracted from the HTML before 
+   parsing it.
 
-3. Normalization (Code node) - let's continue with job board example
-   Converts the raw response from each source into a common schema with
-   consistent field names: `title`, `company`, `location`, `url`,
-   `description`, `source`, and a deterministic `jobHash`.
+4. Split data array
+   Data is formatted to better manilupation in the following steps.   
 
-4. Merge
-   Combines the normalized outputs from all sources into a single
-   stream.
+5. Merge
+   Combines the JSON outputs from all requests into a single stream.
 
 5. Remove Duplicates
    Eliminates repeated entries within the merged stream, using a
    stable identifier.
 
-6. Update MongoDB
-   Writes each item to the database. The operation uses the `jobHash`
-   as the update key with upsert enabled, so a job is inserted the
-   first time it is seen and only updated on subsequent runs.
+6. Normalization (Code node) - let's continue with job board example
+   Converts the raw response from each source into a common schema with
+   consistent field names: `title`, `company`, `location`, `url`,
+   `description`, `source`, and a deterministic `jobHash`.
+
+7. Merge
+   Combines the normalized outputs from all sources into a single
+   stream.
+
+8. Remove Duplicates (again)
+   Eliminates repeated entries within the merged stream, using a
+   stable identifier.
+
+9. Update MongoDB
+   Writes each item to the database. The operation uses a ***hash***
+   as the update key with upsert enabled.
+   In the case of job example, a job is inserted the first time 
+   it is seen and only updated on subsequent runs.
 
 ---
 
-## 2. Why a Deterministic Hash Is Used
+## 2. Why a deterministic hash is used
 
-The same job can appear on multiple boards with slightly different
-titles or formatting. To detect that two entries refer to the same
-position, the workflow computes a hash from a normalized combination of
-title and company. This hash is stored in the `jobHash` field and used
-as the update key.
+The same, e,g., job can appear on multiple boards with slightly 
+different titles or formatting. To detect that two entries refer to the 
+same position, the workflow computes a hash from a normalized 
+combination of title and company. 
+This hash is stored in the `jobHash` field and used as the update key.
 
 Because the hash is deterministic, the same input always produces the
 same output. This is what makes the upsert behavior work: the second
@@ -95,14 +109,15 @@ document instead of creating a duplicate.
 
 ---
 
-## 3. Recommended Repository Layout for Workflows
+## 3. Recommended repository layout for workflows
 
     workflows/
     |
-    +-- README.md                       (this file)
+    +-- README_n8n.md                   (this file)
     +-- job-search-pipeline.json        (main workflow)
-    +-- scoring.json                    (optional: LLM scoring workflow)
+<!--    +-- scoring.json                    (optional: LLM scoring workflow)
     +-- export-workflows.sh             (script that pulls workflows from n8n)
+-->
 
 ### Exporting workflows from n8n
 
@@ -117,7 +132,7 @@ produces cleaner diffs when committed to git.
 
 ---
 
-## 4. Notes on Credentials Inside Workflows
+## 4. Notes on credentials inside workflows
 
 Exported workflow JSON files do not contain the actual credential
 values, but they do reference credential IDs. This means:
@@ -127,7 +142,8 @@ values, but they do reference credential IDs. This means:
   need to recreate the credentials manually and re-link them in the
   affected nodes.
 
-Do not paste API keys or passwords directly into node parameters.
+
+***NOTE: Do not paste API keys or passwords directly into node parameters.***
 Always use n8n's credential system, so that the values stay out of the
 exported files.
 
