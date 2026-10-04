@@ -2,12 +2,15 @@
 
 ![Architecture diagram](assets/workflow-diagram.png)
 
-This workflow uses:</br>
+<img src="https://github.com/docker/compose/blob/main/logo.png?raw=true" alt="drawing" width="60"/>    <img src="https://github.com/passteque/gluetun/blob/master/title.svg" alt="drawing" width="60"/>    <img src="https://github.com/FlareSolverr/FlareSolverr/blob/master/resources/flaresolverr_logo.png" alt="drawing" width="70"/>    <img src="https://github.com/mongodb/mongo/blob/master/docs/leaf.svg" width="30"/>    <img src="https://github.com/n8n-io/n8n/blob/master/assets/n8n-logo.png" alt="drawing" width="100"/>
+</br>
+
+Program versions used in the architecture and workflow: </br>
 Docker compose: [![](https://img.shields.io/github/v/release/docker/compose.svg?style=flat-square)](https://github.com/docker/compose/releases/v5.5.1)</br>
 Gluetun: [![](https://img.shields.io/github/release/passteque/gluetun?)](https://github.com/passteque/gluetun/releases/tag/v3.41.3)</br>
-N8n: [![](https://img.shields.io/github/v/release/n8n-io/n8n?)](https://github.com/n8n-io/n8n/releases/tag/n8n%402.41.6)</br>
 Flaresolverr: [![](https://img.shields.io/github/v/release/FlareSolverr/FlareSolverr)](https://github.com/FlareSolverr/FlareSolverr/releases)</br>
 MongoDB 7: [![](https://img.shields.io/github/v/release/mongodb/mongo)](https://www.mongodb.com/docs/manual/release-notes/7.0/)</br>
+N8n: [![](https://img.shields.io/github/v/release/n8n-io/n8n?)](https://github.com/n8n-io/n8n/releases/tag/n8n%402.41.6)</br>
 
 ---
 Web search automation stack using docker as a container and gluetun as 
