@@ -151,8 +151,35 @@ network gateway for the others.
     +-- .env.example               (template showing required variables)
     +-- .gitignore                 (excludes .env and local data)
     |
-<!--   +-- workflows/                 (exported n8n workflow files)
+   +-- workflows/                 (exported n8n workflow files)
         |
-        +-- README.md              (describes the workflow logic)
-        +-- job-search-pipeline.json
--->
+        +-- README_n8n.md              (describes the workflow logic)
+        +-- web-search-pipeline.json
+
+
+### Where to start
+
+1. Read this file to understand the overall architecture.
+2. Open `docker-compose.yml` to see how each container is configured,
+   which environment variables it needs, and how the network sharing
+   is set up.
+3. Copy `.env.example` to `.env` and fill in your own WireGuard private
+   key and any other secrets.
+4. Read `workflows/README.md` to understand what each workflow does.
+5. Start the stack with `docker compose up -d`.
+
+---
+
+## 5. What Is Not Committed
+
+The `.env` file contains secrets and is excluded from version control.
+It should contain at minimum:
+
+- `WIREGUARD_PRIVATE_KEY` (from your VPN provider's WireGuard
+  configuration)
+
+If you later add authentication to MongoDB, the credentials also belong
+in `.env`.
+
+Never commit `.env` to a public or shared repository. If a secret is
+ever exposed, rotate it immediately at the provider
