@@ -185,7 +185,7 @@ connects directly to the VPN provider.
 ### Further Documentation
 
 - n8n self-hosting: [https://docs.n8n.io/deploy/host-n8n/](https://docs.n8n.io/deploy/host-n8n/)
-- Gluetun: [https://github.com/qmcgaw/gluetun](https://github.com/qmcgaw/gluetun)
+- Gluetun: [https://github.com/passteque/gluetun](https://github.com/passteque/gluetun)
 - FlareSolverr: [https://github.com/FlareSolverr/FlareSolverr](https://github.com/FlareSolverr/FlareSolverr)
 - MongoDB Docker: [https://hub.docker.com/\_/mongo](https://hub.docker.com/\_/mongo)
 
