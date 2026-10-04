@@ -91,6 +91,27 @@ The VPN does not make the requests anonymous in a legal sense. It
 changes the exit IP address so that automated access is not 
 immediately rejected by the WAF.
 
+### Using Proton VPN's Free Tier
+
+If you don't have a paid Proton VPN subscription, you can use the
+free tier. It supports servers in 10 countries (Netherlands, 
+Japan, Romania, Poland, Norway, Switzerland, Singapore, Mexico, 
+Canada, and the United States) with unlimited bandwidth.
+
+To enable it in `docker-compose.yml`:
+
+1. Comment out the `WIREGUARD_PRIVATE_KEY` line.
+2. Uncomment the `FREE_ONLY=on` line.
+
+Gluetun will then select a free-tier server automatically.
+
+Note: The free tier allows only one simultaneous connection. 
+If you are already connected on another device, Gluetun may fail to 
+establish its tunnel.
+
+For details, see the official Proton VPN free plan documentation: 
+[https://protonvpn.com/support/proton-vpn-plans](https://protonvpn.com/support/proton-vpn-plans)
+
 ---
 
 ## 3. Container Structure
@@ -143,6 +164,30 @@ network gateway for the others.
 - Because n8n, MongoDB, and FlareSolverr all share the gluetun network
   namespace, they communicate with each other over the loopback address
   (127.0.0.1) rather than through a separate Docker bridge network.
+
+### Dependencies
+
+All components are pulled automatically by Docker Compose. 
+No manual installation of `MongoDB`, `FlareSolverr`, `Gluetun`, or `n8n`
+ is required beyond having Docker and Docker Compose installed.
+
+- `Gluetun` acts as the network gateway. It is the only container that 
+connects directly to the VPN provider.
+- `n8n` runs as the workflow engine. It uses the official Docker image
+ and persists data in a named volume.
+- `MongoDB` runs as a separate container. The `mongo:7` image is pinned in
+ the compose file to avoid a known incompatibility between `MongoDB 8.x`
+  and `Linux kernel 6.19+`.
+- `FlareSolverr` runs only when a workflow needs to pass a 
+ ***Cloudflare challenge***. It is optional and can be removed if no
+  source requires it.
+
+### Further Documentation
+
+- n8n self-hosting: [https://docs.n8n.io/deploy/host-n8n/](https://docs.n8n.io/deploy/host-n8n/)
+- Gluetun: [https://github.com/qmcgaw/gluetun](https://github.com/qmcgaw/gluetun)
+- FlareSolverr: [https://github.com/FlareSolverr/FlareSolverr](https://github.com/FlareSolverr/FlareSolverr)
+- MongoDB Docker: [https://hub.docker.com/\_/mongo](https://hub.docker.com/\_/mongo)
 
 ---
 
