@@ -95,6 +95,7 @@ immediately rejected by the WAF.
 The project is built from four containers. One of them acts as the
 network gateway for the others.
 
+```
     Host machine
          |
          v
@@ -121,6 +122,7 @@ network gateway for the others.
     |  | FlareSolverr|                  |
     |  +-------------+                  |
     +-----------------------------------+
+```
 
 ### How to read this diagram
 
@@ -142,7 +144,7 @@ network gateway for the others.
 ---
 
 ## 4. Repository Structure
-
+```
     project-root/
     |
     +-- README.md                  (this file)
@@ -155,7 +157,7 @@ network gateway for the others.
         |
         +-- README_n8n.md              (describes the workflow logic)
         +-- web-search-pipeline.json
-
+```
 
 ### Where to start
 
