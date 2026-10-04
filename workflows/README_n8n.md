@@ -10,6 +10,7 @@ command.
 
 The main workflow follows this general sequence:
 
+```
     Timer
       |
       +--------+---------+------(...)-----------+---(...)-----
@@ -45,6 +46,8 @@ The main workflow follows this general sequence:
                                   |
                                   v
                            Update MongoDB
+
+```
 
 ### Step-by-step
 
