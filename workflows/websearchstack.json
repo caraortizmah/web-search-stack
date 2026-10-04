@@ -1,0 +1,817 @@
+[
+  {
+    "updatedAt": "2026-10-04T15:30:18.209Z",
+    "createdAt": "2026-09-11T17:58:59.828Z",
+    "id": "SvqpVJqIp2Qfvh7Q",
+    "name": "HTTPrequest_to_datainmongoDB",
+    "description": null,
+    "active": false,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "hours",
+                "hoursInterval": 2,
+                "triggerAtMinute": 1
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.4,
+        "position": [
+          -1504,
+          1264
+        ],
+        "id": "d59ee77c-d898-4a7a-ac00-2dc14de23b06",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "compare": "selectedFields",
+          "fieldsToCompare": "url, external_id",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.removeDuplicates",
+        "typeVersion": 2,
+        "position": [
+          -384,
+          976
+        ],
+        "id": "eaf010a6-0970-4f60-a97d-9ec21d4eb9eb",
+        "name": "Remove Duplicates"
+      },
+      {
+        "parameters": {
+          "url": "https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v6/jobs",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "was",
+                "value": "ML engineer"
+              },
+              {
+                "name": "wo",
+                "value": "Hamburg"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "X-API-Key",
+                "value": "jobboerse-jobsuche"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          -1280,
+          1360
+        ],
+        "id": "c4ca8722-8a00-4cc2-8915-593c7042a266",
+        "name": "HTTP Request: MLeng"
+      },
+      {
+        "parameters": {
+          "url": "https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v6/jobs",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "was",
+                "value": "DevSecOps"
+              },
+              {
+                "name": "wo",
+                "value": "Hamburg"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "X-API-Key",
+                "value": "jobboerse-jobsuche"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          -1280,
+          1552
+        ],
+        "id": "1c52ebf9-393c-4a1e-ad88-93ea9d5553de",
+        "name": "HTTP Request: DevSecOps"
+      },
+      {
+        "parameters": {
+          "url": "https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v6/jobs",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "was",
+                "value": "computational"
+              },
+              {
+                "name": "wo",
+                "value": "Hamburg"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "X-API-Key",
+                "value": "jobboerse-jobsuche"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          -1280,
+          1744
+        ],
+        "id": "efb639b1-6922-4224-9151-15eefe33c06d",
+        "name": "HTTP Request: computational"
+      },
+      {
+        "parameters": {
+          "compare": "selectedFields",
+          "fieldsToCompare": "refnr",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.removeDuplicates",
+        "typeVersion": 2,
+        "position": [
+          -384,
+          1552
+        ],
+        "id": "456985af-661c-4b70-a883-33f373751364",
+        "name": "Remove Duplicates1"
+      },
+      {
+        "parameters": {
+          "numberInputs": 3
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          -608,
+          960
+        ],
+        "id": "06a49740-ca75-48fb-9db1-127fe7ef9ac8",
+        "name": "Merge Freehire.me"
+      },
+      {
+        "parameters": {
+          "numberInputs": 3
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          -608,
+          1536
+        ],
+        "id": "68d9c7b0-b6a7-4702-bbca-ae21da1d6a9a",
+        "name": "Merge Arbeitsagentur"
+      },
+      {
+        "parameters": {
+          "jsCode": "// A fast, collision-resistant pure JS hash function (alternative to SHA-256)\nfunction generateHash(str) {\n  let h1 = 0xdeadbeef, h2 = 0x41c6ce57;\n  for (let i = 0, ch; i < str.length; i++) {\n    ch = str.charCodeAt(i);\n    h1 = Math.imul(h1 ^ ch, 2654435761);\n    h2 = Math.imul(h2 ^ ch, 1597334677);\n  }\n  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507);\n  h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);\n  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507);\n  h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);\n  return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(16);\n}\n\n// Remove duplicates customized:\n// 1. Standardizes target data (e.g., stripping spaces, forcing lowercase) so variations like \" John Doe \" and \"john.doe\" resolve to the exact same text string\n// 2. Creates a hash (id) with the combination of two target data, in this case title and company\n// 3. Preserve unique ids\n\n// Import crypto for hashing (built-in in modern Node.js environments)\n// const crypto = require('crypto'); // not alowed in n8n\n\n// 1. Extract the jobs array from your input structure\nconst jobs = $input.all().map(item => item.json);\nconst uniqueItems = new Map();\n\nconsole.log(`[DEDUPLICATION START] Processing ${jobs.length} total jobs.`); // Check total length\n\nfor (let index = 0; index < jobs.length; index++) {\n  const item = jobs[index];\n  // 2. Normalize custom fields (title and company): the \"core identity\"\n  const normalizedTitle = (item.title || '').trim().toLowerCase().replace(/\\s+/g, '');\n  const normalizedCompany = (item.company || '').trim().toLowerCase().replace(/\\s+/g, '');\n\n  // 3. Combine into a unique identity string\n  const coreIdentityString = `${normalizedTitle}|${normalizedCompany}`;\n\n  // 4. Generate a deterministic SHA-256 hash to use as _id\n  const hashId = generateHash(coreIdentityString);\n  \n  // Pad or truncate to exactly 24 hex chars for MongoDB ObjectId compatibility\n  const mongoId = hashId.padStart(24, '0').slice(-24);\n\n  // 5. Build your customized output object structure\n  const formattedItem = {\n    json: {\n      jobhash: mongoId, // Injected hash ID\n      title: item.title,\n      company: item.company,\n      location: item.location,\n      url: item.url,\n      source_id: item.id,\n      description: item.description,\n      source: item.source\n    }\n  };\n\n  // 6. De-duplicate: Keep only the first occurrence of this specific hash\n  if (!uniqueItems.has(hashId)) {\n    console.log(`:) [Item ${index}] Keeping unique job: \"${item.title}\" by ${item.company} (jobhash: ${hashId})`);\n    uniqueItems.set(hashId, formattedItem);\n  } else {\n    console.warn(`:( [Item ${index}] Dropping duplicate job: \"${item.title}\" by ${item.company}`);\n  }\n}\n\n// Return only the unique items\nconsole.log(`[DEDUPLICATION END] Returning ${uniqueItems.size} unique jobs.`);\nreturn Array.from(uniqueItems.values());"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          288,
+          1264
+        ],
+        "id": "02884e82-3804-45c5-9bb0-218c2e1c72d5",
+        "name": "Remove duplicates (customized by title&company), hash_id",
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "jsCode": "// Normalize\nconst jobs = $input.all() || [];\nreturn jobs.map(item => ({\n  json: {\n    title: item.json.title,\n    company: item.json.company,\n    location: item.json.location,\n    url: item.json.url,\n    source_id: item.json.external_id,\n    description: item.json.description,\n    source: item.json.source\n  }\n}));"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -160,
+          976
+        ],
+        "id": "6a600c75-da81-4b0d-a009-b8cdaf0d2f90",
+        "name": "Normalization of 7 keys and values per call"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Normalize\nconst jobs = $input.all() || [];\nreturn jobs.map(item => ({\n  json: {\n    title: item.json.title,\n    company: item.json.company,\n    location: item.json.location,\n    url: item.json.url,\n    source_id: item.json.refnr,\n    description: item.json.encoded_refnr,\n    source: item.json.source\n  }\n}));"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -160,
+          1552
+        ],
+        "id": "8ff0f9ee-ca6b-40f1-9197-c273fb937f94",
+        "name": "Normalization of 7 keys and values per call1"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          64,
+          1264
+        ],
+        "id": "b24f4758-fddd-4049-8b98-bc491e3ae96c",
+        "name": "Merge normalized data"
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "collection": "Jobsid",
+          "updateKey": "jobhash",
+          "fields": "jobhash,title,company,location,url,description,source",
+          "upsert": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1.5,
+        "position": [
+          512,
+          1264
+        ],
+        "id": "e8138a18-24bb-488b-9733-e502e3ba33c5",
+        "name": "Update documents",
+        "alwaysOutputData": true,
+        "credentials": {
+          "mongoDb": {
+            "id": "mx7CkvgCkaLzUFiF",
+            "name": "MongoDB account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "content": "## Web pages using cloudfare\n**Flaresolverr** and JavaScript execution for:\n1. ### HTTP Request: Cyber\n2. ### HTTP Request: Comp_chem2\n3. ### HTTP Request: MLeng_datascient",
+          "height": 304
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -1152,
+          384
+        ],
+        "typeVersion": 1,
+        "id": "fcd8565f-281c-424e-9da7-7bbd8ac0e9ea",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "http://127.0.0.1:8191/v1",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n  \"cmd\": \"request.get\",\n  \"url\": \"https://freehire.me/api/v1/agent/jobs/search?q=software+engineer&domains=cybersecurity&countries=DE&cities=Hamburg,Berlin,Munich&limit=50&posted_within_days=14\",\n  \"maxTimeout\": 90000\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          -1280,
+          784
+        ],
+        "id": "48a7b454-6b7a-4120-a620-71bfaaefd503",
+        "name": "HTTP Request: Cyber"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "http://127.0.0.1:8191/v1",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n  \"cmd\": \"request.get\",\n  \"url\": \"https://freehire.me/api/v1/agent/jobs/search?q=computational+chemistry,Cheminformatician&countries=DE&cities=Hamburg,Berlin,Munich&limit=50&posted_within_days=14\",\n  \"maxTimeout\": 90000\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          -1280,
+          976
+        ],
+        "id": "51a5ebd0-89af-4036-94c5-b2cc17700ad5",
+        "name": "HTTP Request: Comp_chem2"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "http://127.0.0.1:8191/v1",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n  \"cmd\": \"request.get\",\n  \"url\": \"https://freehire.me/api/v1/agent/jobs/search?q=ML+engineer,data+scientist&countries=DE&cities=Hamburg,Berlin,Munich&limit=50&posted_within_days=14\",\n  \"maxTimeout\": 90000\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          -1280,
+          1168
+        ],
+        "id": "203c9c96-58cb-474a-a07c-58ce658c714d",
+        "name": "HTTP Request: MLeng_datascient"
+      },
+      {
+        "parameters": {
+          "jsCode": "return $input.all().map(item => {\n  const html = item.json.solution?.response || \"\";\n  \n  // Extract the JSON string between <pre> and </pre>\n  const match = html.match(/<pre>([\\s\\S]*?)<\\/pre>/);\n  \n  if (!match) {\n    return { json: { error: \"No <pre> block found\", raw: html.slice(0, 200) } };\n  }\n  \n  // Decode HTML entities that FlareSolverr escaped\n  let jsonText = match[1]\n    .replace(/&quot;/g, '\"')\n    .replace(/&amp;/g, '&')\n    .replace(/&lt;/g, '<')\n    .replace(/&gt;/g, '>')\n    .replace(/&#39;/g, \"'\");\n  \n  try {\n    const parsed = JSON.parse(jsonText);\n    return { json: parsed };\n  } catch (e) {\n    return { json: { error: e.message, snippet: jsonText.slice(0, 300) } };\n  }\n});"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1056,
+          976
+        ],
+        "id": "82987662-14c8-4c2d-a344-aa61c980f603",
+        "name": "Object parser to json2"
+      },
+      {
+        "parameters": {
+          "jsCode": "return $input.all().map(item => {\n  const html = item.json.solution?.response || \"\";\n  \n  // Extract the JSON string between <pre> and </pre>\n  const match = html.match(/<pre>([\\s\\S]*?)<\\/pre>/);\n  \n  if (!match) {\n    return { json: { error: \"No <pre> block found\", raw: html.slice(0, 200) } };\n  }\n  \n  // Decode HTML entities that FlareSolverr escaped\n  let jsonText = match[1]\n    .replace(/&quot;/g, '\"')\n    .replace(/&amp;/g, '&')\n    .replace(/&lt;/g, '<')\n    .replace(/&gt;/g, '>')\n    .replace(/&#39;/g, \"'\");\n  \n  try {\n    const parsed = JSON.parse(jsonText);\n    return { json: parsed };\n  } catch (e) {\n    return { json: { error: e.message, snippet: jsonText.slice(0, 300) } };\n  }\n});"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1056,
+          784
+        ],
+        "id": "68a8c34b-202f-417a-b22e-dee93a645486",
+        "name": "Object parser to json 1"
+      },
+      {
+        "parameters": {
+          "jsCode": "return $input.all().map(item => {\n  const html = item.json.solution?.response || \"\";\n  \n  // Extract the JSON string between <pre> and </pre>\n  const match = html.match(/<pre>([\\s\\S]*?)<\\/pre>/);\n  \n  if (!match) {\n    return { json: { error: \"No <pre> block found\", raw: html.slice(0, 200) } };\n  }\n  \n  // Decode HTML entities that FlareSolverr escaped\n  let jsonText = match[1]\n    .replace(/&quot;/g, '\"')\n    .replace(/&amp;/g, '&')\n    .replace(/&lt;/g, '<')\n    .replace(/&gt;/g, '>')\n    .replace(/&#39;/g, \"'\");\n  \n  try {\n    const parsed = JSON.parse(jsonText);\n    return { json: parsed };\n  } catch (e) {\n    return { json: { error: e.message, snippet: jsonText.slice(0, 300) } };\n  }\n});"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1056,
+          1168
+        ],
+        "id": "cb29a1ec-cb21-4c83-8f38-aa1b05fa7758",
+        "name": "Object parser to json 3"
+      },
+      {
+        "parameters": {
+          "jsCode": "const ergebnisliste = $input.first().json.ergebnisliste || [];\n\nreturn ergebnisliste.map(item => {\n  return {\n    json: {\n      title: item.stellenangebotsTitel || \"\",\n      company: item.firma || \"\",\n      location: item.stellenlokationen?.[0]?.adresse?.ort || \"\",\n      postal_code: item.stellenlokationen?.[0]?.adresse?.plz || \"\",\n      region: item.stellenlokationen?.[0]?.adresse?.region || \"\",\n      url: item.externeURL || \"\",\n      refnr: item.referenznummer,\n      encoded_refnr: \n        Buffer.from(item.referenznummer).\n        toString('base64').\n        replace(/\\+/g, '-').\n        replace(/\\//g, '_').\n        replace(/=+$/, ''), // Remove padding\n      full_time: item.arbeitszeitVollzeit || false,\n      home_office: item.homeofficemoeglich || false,\n      published: item.datumErsteVeroeffentlichung || \"\",\n      source: \"arbeitsagentur\"\n    }\n  };\n});"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1056,
+          1360
+        ],
+        "id": "eeb7b1eb-ca5a-4956-8082-e5b3b83ba0f2",
+        "name": "Split data array adapted to source2 1"
+      },
+      {
+        "parameters": {
+          "jsCode": "const ergebnisliste = $input.first().json.ergebnisliste || [];\n\nreturn ergebnisliste.map(item => {\n  return {\n    json: {\n      title: item.stellenangebotsTitel || \"\",\n      company: item.firma || \"\",\n      location: item.stellenlokationen?.[0]?.adresse?.ort || \"\",\n      postal_code: item.stellenlokationen?.[0]?.adresse?.plz || \"\",\n      region: item.stellenlokationen?.[0]?.adresse?.region || \"\",\n      url: item.externeURL || \"\",\n      refnr: item.referenznummer,\n      encoded_refnr: \n        Buffer.from(item.referenznummer).\n        toString('base64').\n        replace(/\\+/g, '-').\n        replace(/\\//g, '_').\n        replace(/=+$/, ''), // Remove padding\n      full_time: item.arbeitszeitVollzeit || false,\n      home_office: item.homeofficemoeglich || false,\n      published: item.datumErsteVeroeffentlichung || \"\",\n      source: \"arbeitsagentur\"\n    }\n  };\n});"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1056,
+          1552
+        ],
+        "id": "803f3de5-0ec7-4ec7-a0d6-0470e0e0d226",
+        "name": "Split data array adapted to source2 2"
+      },
+      {
+        "parameters": {
+          "jsCode": "const ergebnisliste = $input.first().json.ergebnisliste || [];\n\nreturn ergebnisliste.map(item => {\n  return {\n    json: {\n      title: item.stellenangebotsTitel || \"\",\n      company: item.firma || \"\",\n      location: item.stellenlokationen?.[0]?.adresse?.ort || \"\",\n      postal_code: item.stellenlokationen?.[0]?.adresse?.plz || \"\",\n      region: item.stellenlokationen?.[0]?.adresse?.region || \"\",\n      url: item.externeURL || \"\",\n      refnr: item.referenznummer,\n      encoded_refnr: \n        Buffer.from(item.referenznummer).\n        toString('base64').\n        replace(/\\+/g, '-').\n        replace(/\\//g, '_').\n        replace(/=+$/, ''), // Remove padding\n      full_time: item.arbeitszeitVollzeit || false,\n      home_office: item.homeofficemoeglich || false,\n      published: item.datumErsteVeroeffentlichung || \"\",\n      source: \"arbeitsagentur\"\n    }\n  };\n});"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1056,
+          1744
+        ],
+        "id": "5d3f42a9-319f-4697-8052-4f5d9451b90d",
+        "name": "Split data array adapted to source2 3"
+      },
+      {
+        "parameters": {
+          "jsCode": "const jobs = $input.first().json.data || [];\n\nreturn jobs.map(item => {\n  return {\n    json: {\n      title: item.title || \"\",\n      company: item.company || \"\",\n      location: item.location || \"\",\n      postal_code: \"\",\n      region: \"\",\n      url: item.url || \"\",\n      external_id: item.external_id || \"\",\n      description: item.description || \"\",\n      published: item.posted_at || \"\",\n      source: \"freehire\"\n    }\n  };\n});"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -832,
+          784
+        ],
+        "id": "a2d3a942-fb41-410d-8c12-1dc293d4011e",
+        "name": "Split data array adapted to source1 1"
+      },
+      {
+        "parameters": {
+          "jsCode": "const jobs = $input.first().json.data || [];\n\nreturn jobs.map(item => {\n  return {\n    json: {\n      title: item.title || \"\",\n      company: item.company || \"\",\n      location: item.location || \"\",\n      postal_code: \"\",\n      region: \"\",\n      url: item.url || \"\",\n      external_id: item.external_id || \"\",\n      description: item.description || \"\",\n      published: item.posted_at || \"\",\n      source: \"freehire\"\n    }\n  };\n});"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -832,
+          976
+        ],
+        "id": "fa7250d4-151d-4822-9fbe-2315e382395c",
+        "name": "Split data array adapted to source1 2"
+      },
+      {
+        "parameters": {
+          "jsCode": "const jobs = $input.first().json.data || [];\n\nreturn jobs.map(item => {\n  return {\n    json: {\n      title: item.title || \"\",\n      company: item.company || \"\",\n      location: item.location || \"\",\n      postal_code: \"\",\n      region: \"\",\n      url: item.url || \"\",\n      external_id: item.external_id || \"\",\n      description: item.description || \"\",\n      published: item.posted_at || \"\",\n      source: \"freehire\"\n    }\n  };\n});"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -832,
+          1168
+        ],
+        "id": "6f25c418-9c3f-41dc-ab64-1d93436fc6c7",
+        "name": "Split data array adapted to source1 3"
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request: Comp_chem2",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "HTTP Request: MLeng_datascient",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "HTTP Request: MLeng",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "HTTP Request: DevSecOps",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "HTTP Request: computational",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "HTTP Request: Cyber",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request: computational": {
+        "main": [
+          [
+            {
+              "node": "Split data array adapted to source2 3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request: DevSecOps": {
+        "main": [
+          [
+            {
+              "node": "Split data array adapted to source2 2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request: MLeng": {
+        "main": [
+          [
+            {
+              "node": "Split data array adapted to source2 1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Remove Duplicates": {
+        "main": [
+          [
+            {
+              "node": "Normalization of 7 keys and values per call",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Remove Duplicates1": {
+        "main": [
+          [
+            {
+              "node": "Normalization of 7 keys and values per call1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge Freehire.me": {
+        "main": [
+          [
+            {
+              "node": "Remove Duplicates",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge Arbeitsagentur": {
+        "main": [
+          [
+            {
+              "node": "Remove Duplicates1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalization of 7 keys and values per call": {
+        "main": [
+          [
+            {
+              "node": "Merge normalized data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalization of 7 keys and values per call1": {
+        "main": [
+          [
+            {
+              "node": "Merge normalized data",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Merge normalized data": {
+        "main": [
+          [
+            {
+              "node": "Remove duplicates (customized by title&company), hash_id",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Remove duplicates (customized by title&company), hash_id": {
+        "main": [
+          [
+            {
+              "node": "Update documents",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request: Cyber": {
+        "main": [
+          [
+            {
+              "node": "Object parser to json 1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request: Comp_chem2": {
+        "main": [
+          [
+            {
+              "node": "Object parser to json2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request: MLeng_datascient": {
+        "main": [
+          [
+            {
+              "node": "Object parser to json 3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Object parser to json 1": {
+        "main": [
+          [
+            {
+              "node": "Split data array adapted to source1 1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Object parser to json2": {
+        "main": [
+          [
+            {
+              "node": "Split data array adapted to source1 2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Object parser to json 3": {
+        "main": [
+          [
+            {
+              "node": "Split data array adapted to source1 3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split data array adapted to source2 1": {
+        "main": [
+          [
+            {
+              "node": "Merge Arbeitsagentur",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split data array adapted to source2 2": {
+        "main": [
+          [
+            {
+              "node": "Merge Arbeitsagentur",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Split data array adapted to source2 3": {
+        "main": [
+          [
+            {
+              "node": "Merge Arbeitsagentur",
+              "type": "main",
+              "index": 2
+            }
+          ]
+        ]
+      },
+      "Split data array adapted to source1 1": {
+        "main": [
+          [
+            {
+              "node": "Merge Freehire.me",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split data array adapted to source1 2": {
+        "main": [
+          [
+            {
+              "node": "Merge Freehire.me",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Split data array adapted to source1 3": {
+        "main": [
+          [
+            {
+              "node": "Merge Freehire.me",
+              "type": "main",
+              "index": 2
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "binaryMode": "separate"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "nodeGroups": [],
+    "pinData": {},
+    "versionId": "2569a0db-0d36-4692-9768-ea192148fb45",
+    "activeVersionId": null,
+    "versionCounter": 796,
+    "triggerCount": 0,
+    "sourceWorkflowId": null,
+    "tags": [],
+    "shared": [
+      {
+        "updatedAt": "2026-09-11T17:58:59.833Z",
+        "createdAt": "2026-09-11T17:58:59.833Z",
+        "role": "workflow:owner",
+        "workflowId": "SvqpVJqIp2Qfvh7Q",
+        "projectId": "eqHTu9HZNQrcBwPO",
+        "project": {
+          "updatedAt": "2026-09-11T17:13:58.520Z",
+          "createdAt": "2026-09-11T15:56:01.759Z",
+          "id": "eqHTu9HZNQrcBwPO",
+          "name": "cara mah <subs.sectional552@passmail.net>",
+          "type": "personal",
+          "icon": null,
+          "description": null,
+          "customTelemetryTags": [],
+          "creatorId": "0f92b0da-ffd0-452d-8700-bdeb89c38e03"
+        }
+      }
+    ],
+    "versionMetadata": {
+      "name": null,
+      "description": null
+    }
+  }
+]
