@@ -1,0 +1,79 @@
+version: "3"
+services:
+  # --- ProtonVPN ---
+  gluetun:
+    image: qmcgaw/gluetun
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - VPN_SERVICE_PROVIDER=protonvpn
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+      - SERVER_COUNTRIES=Germany
+      - FIREWALL_OUTBOUND_SUBNETS=127.0.0.0/8
+      #- FREE_ONLY=on  # Remove this line if you have a paid Proton VPN plan
+    ports:
+      - "127.0.0.1:5678:5678"  # n8n UI, only accessible locally
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://ifconfig.me"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    restart: unless-stopped
+
+  #--- flaresolverr ---
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    network_mode: "service:gluetun"
+    environment:
+      - LOG_LEVEL=info
+      - TZ=Europe/Berlin
+    depends_on:
+      gluetun:
+        condition: service_healthy  # waits for VPN to be ready
+    restart: unless-stopped
+
+  #--- n8n ---
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: n8n
+    network_mode: "service:gluetun"  # All traffic goes through VPN
+    environment:
+      - GENERIC_TIMEZONE=Europe/Berlin
+      - TZ=Europe/Berlin
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    restart: unless-stopped
+
+  #--- mongodb---
+  mymongodb:
+    image: mongo:7 #latest has incompatibilities with kernel 6.19+, kernel trigger warning from TCMalloc
+    container_name: mymongodb
+    network_mode: "service:gluetun"
+    #ports:
+    #  - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    #networks:
+    #  - internal-vpn-tunnel  # Links it directly to n8n behind the scenes
+
+volumes:
+  n8n_data:
+    external: true
+  mongo_data:
+
+networks:
+  internal-vpn-tunnel:
+    driver: bridge # sets up a private virtual network router entirely inside your Docker environment
+
