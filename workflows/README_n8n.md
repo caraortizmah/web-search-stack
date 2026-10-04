@@ -117,31 +117,104 @@ document instead of creating a duplicate.
     workflows/
     |
     +-- README_n8n.md                   (this file)
-    +-- job-search-pipeline.json        (main workflow)
+    +-- websearchstack.json             (main workflow)
+    +-- export-workflows.sh             (helper script to export workflows)
 <!--    +-- scoring.json                    (optional: LLM scoring workflow)
     +-- export-workflows.sh             (script that pulls workflows from n8n)
 -->
 
 ### Exporting workflows from n8n
 
+
+Version control tracks individual workflows, not the entire n8n
+instance. To export one workflow, you need its ID.
+
+#### Step 1: Get the workflow ID from the browser
+
+Open the workflow in n8n and look at the URL:
+
+    http://127.0.0.1:5678/workflow/AbCdEf123456XyZ
+
+The ID is the segment after `/workflow/`. In this example:
+`AbCdEf123456XyZ`.
+
+#### Step 2: Create the export folder inside the container (***first time only***)
+
 Create a folder inside n8n node ***if it is the first time*** exporting
 for control version.
-For instance a folder called `workflows`:
+For instance a folder called `workflows` since that folder does not exist by default:
 
     docker exec n8n mkdir -p /home/node/workflows
+
+#### Step 3: Export the specific workflow
 
 Workflows live inside the n8n container. To pull them out for version
 control:
 
-    docker exec n8n n8n export:workflow --backup --output=/home/node/workflows/ --separate
-    docker cp n8n:/home/node/workflows/. ./workflows/
+    docker exec n8n n8n export:workflow --id=AbCdEf123456XyZ --output=/home/node/workflows/websearchstack.json --pretty
 
-The `--separate` flag writes each workflow to its own JSON file, which
-produces cleaner diffs when committed to git.
+- `--id` selects the specific workflow.
+- `--output` specifies the file path inside the container.
+- `--pretty` formats the JSON for readable diffs.
+- `AbCdEf123456XyZ` is an example of your workflow ID
+- `websearchstack.json` is the name of the main workflow
+
+#### Step 4: Copy the file to the host repository
+
+    docker cp n8n:/home/node/workflows/websearchstack.json /home/user/gitpath/repopath/workflows/
+
+#### Step 5: Commit
+
+    cd /home/user/gitpath/repopath/
+    git add workflows/websearchstack.json
+    git commit -m "Update workflow"
 
 ---
 
-## 4. Notes on credentials inside workflows
+### About Workflow IDs
+
+The workflow ID is an internal handle assigned by n8n. It is not the
+same as the workflow name shown in the browser.
+
+- When you create a workflow in the GUI, n8n assigns an ID
+  automatically.
+- When you import a workflow from a JSON file (for example, after
+  cloning the repository on a new machine), n8n assigns a new ID.
+  The ID stored in the file is not preserved.
+- This means the export command with `--id` only works on the machine
+  where that specific ID currently exists. On a fresh clone, import
+  the JSON through the GUI, then look up the new ID if you want to
+  export it again.
+
+### What Not to Use for Version Control
+
+Do not use `--backup` for this repository. That flag exports all
+workflows in the n8n instance, including experimental ones created in
+the GUI. The repository is meant to track only the workflows that
+belong to this project.
+
+### Restoring a Workflow from the Repository
+
+On a new n8n instance:
+
+1. Open n8n in the browser.
+2. Go to Workflows.
+3. Use the menu in the top-right corner and select Import from File.
+4. Select the JSON file from the `workflows/` folder.
+5. n8n creates a new workflow with a new ID. The name is preserved
+   from the file.
+6. Recreate any credentials referenced by the workflow and re-link
+   them in the affected nodes.
+
+## 5. Optional Helper Script
+
+If you export the same workflow repeatedly, open `export-workflows.sh`
+and edit `WORKFLOW_ID`, `WORKFLOW_NAME` and `HOST_REPO` accordingly.
+
+Run it with `./export-workflows.sh` whenever you want to refresh the
+tracked file. 
+
+## 6. Notes on credentials inside workflows
 
 Exported workflow JSON files do not contain the actual credential
 values, but they do reference credential IDs. This means:
