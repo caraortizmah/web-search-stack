@@ -61,7 +61,7 @@ yourself.
 
 ---
 
-## 2. VPN Requirement
+## 2. VPN requirement
 
 All outbound traffic from the containers passes through a VPN tunnel
 provided by a Gluetun container, which connects to a commercial VPN
@@ -91,7 +91,7 @@ The VPN does not make the requests anonymous in a legal sense. It
 changes the exit IP address so that automated access is not 
 immediately rejected by the WAF.
 
-### Using Proton VPN's Free Tier
+### Using Proton VPN's free tier
 
 If you don't have a paid Proton VPN subscription, you can use the
 free tier. It supports servers in 10 countries (Netherlands, 
@@ -114,7 +114,7 @@ For details, see the official Proton VPN free plan documentation:
 
 ---
 
-## 3. Container Structure
+## 3. Container structure
 
 The project is built from four containers. One of them acts as the
 network gateway for the others.
@@ -182,7 +182,7 @@ connects directly to the VPN provider.
  ***Cloudflare challenge***. It is optional and can be removed if no
   source requires it.
 
-### Further Documentation
+### Further documentation
 
 - n8n self-hosting: [https://docs.n8n.io/deploy/host-n8n/](https://docs.n8n.io/deploy/host-n8n/)
 - Gluetun: [https://github.com/passteque/gluetun](https://github.com/passteque/gluetun)
@@ -191,7 +191,7 @@ connects directly to the VPN provider.
 
 ---
 
-## 4. Repository Structure
+## 4. Repository structure
 ```
     project-root/
     |
@@ -220,7 +220,7 @@ connects directly to the VPN provider.
 
 ---
 
-## 5. What Is Not Committed
+## 5. What is not committed
 
 The `.env` file contains secrets and is excluded from version control.
 It should contain at minimum:
