@@ -2,6 +2,14 @@
 
 ![Architecture diagram](assets/workflow-diagram.png)
 
+This workflow uses:</br>
+Docker compose: [![](https://img.shields.io/github/v/release/docker/compose.svg?style=flat-square)](https://github.com/docker/compose/releases/v5.5.1)</br>
+Gluetun: [![](https://img.shields.io/github/release/passteque/gluetun?)](https://github.com/passteque/gluetun/releases/tag/v3.41.3)</br>
+N8n: [![](https://img.shields.io/github/v/release/n8n-io/n8n?)](https://github.com/n8n-io/n8n/releases/tag/n8n%402.41.6)</br>
+Flaresolverr: [![](https://img.shields.io/github/v/release/FlareSolverr/FlareSolverr)](https://github.com/FlareSolverr/FlareSolverr/releases)</br>
+MongoDB 7: [![](https://img.shields.io/github/v/release/mongodb/mongo)](https://www.mongodb.com/docs/manual/release-notes/7.0/)</br>
+
+---
 Web search automation stack using docker as a container and gluetun as 
 the VPN gateway for the n8n workflow that retrieves the information in
  a database in mongoDB.
